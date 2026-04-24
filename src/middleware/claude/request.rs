@@ -279,11 +279,14 @@ where
         }
         // top_p and top_k are deprecated for Opus 4.7 (Anthropic returns
         // `top_p is deprecated for this model` / `top_k is deprecated for
-        // this model` — invalid_request_error). Applied here so both web
-        // and code paths drop them.
+        // this model` — invalid_request_error). For every other model,
+        // top_p still can't coexist with temperature, so drop it in that
+        // case. Applied here so both web and code paths see the rule.
         if body.model.contains("opus-4-7") {
             body.top_p = None;
             body.top_k = None;
+        } else if body.temperature.is_some() {
+            body.top_p = None;
         }
         drop_empty_system(&mut body);
         Ok(Self(body, format))
