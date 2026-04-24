@@ -277,11 +277,11 @@ where
             body.model = body.model.trim_end_matches("-thinking").to_string();
             body.thinking.get_or_insert(Thinking::new(4096));
         }
-        // top_p and top_k are deprecated for Opus 4.x models (Anthropic
-        // returns `top_p is deprecated for this model` /
-        // `top_k is deprecated for this model` — invalid_request_error).
-        // Applied here so both web and code paths drop them.
-        if body.model.contains("opus-4") {
+        // top_p and top_k are deprecated for Opus 4.7 (Anthropic returns
+        // `top_p is deprecated for this model` / `top_k is deprecated for
+        // this model` — invalid_request_error). Applied here so both web
+        // and code paths drop them.
+        if body.model.contains("opus-4-7") {
             body.top_p = None;
             body.top_k = None;
         }
